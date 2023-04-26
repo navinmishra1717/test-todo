@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  description: API
+  version: 1.0.0
+  title: API
+servers:
+  - url: http://localhost:3000
+paths:
+  ## TODO:
+  /todo:
+    post:
+      operationId: createTodo
+      description: Create Todo
+      tags:
+        - Todo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoRequest'
+      responses:
+        '200':
+          description: success
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /todos:
+    get:
+      operationId: getTodos
+      description: get todos
+      tags:
+        - Todos
+      responses:
+        '200':
+          description: success
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /subtask:
+    post:
+      operationId: createSubtask
+      description: Create Subtask
+      tags:
+        - Subtask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubtaskRequest'
+      responses:
+        '200':
+          description: success
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    TodoRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          example: todo 1
+          required:
+            - title
+
+    SubtaskRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          example: subtask 1
+          required:
+            - title
