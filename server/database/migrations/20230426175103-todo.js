@@ -21,7 +21,6 @@ module.exports = {
       title: {
         allowNull: false,
         type: Sequelize.STRING,
-        unique: true,
       },
       status: {
         allowNull: false,
@@ -29,6 +28,10 @@ module.exports = {
         type: Sequelize.ENUM('pending', 'completed'),
       },
       createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
       },
