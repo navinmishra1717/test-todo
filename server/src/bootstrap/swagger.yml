@@ -27,12 +27,41 @@ paths:
           description: Unauthorized
         '500':
           description: Internal server error
+
+  /todo/{id}:
+    put:
+      operationId: updateTodoStatus
+      description: Update Todo status
+      tags:
+        - Todo
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodoStatusRequest'
+      responses:
+        '200':
+          description: success
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  
   /todos:
     get:
       operationId: getTodos
       description: get todos
       tags:
-        - Todos
+        - Todo
       responses:
         '200':
           description: success
@@ -73,6 +102,15 @@ components:
           example: todo 1
           required:
             - title
+
+    UpdateTodoStatusRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          description: Todo Status
+          example: pending | completed
 
     SubtaskRequest:
       type: object

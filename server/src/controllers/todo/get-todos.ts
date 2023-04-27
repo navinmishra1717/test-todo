@@ -1,20 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
+import TodoService from '../../services/todo';
 
 export async function getTodos(req: Request, res: Response, next: NextFunction) {
   try {
+    const { count, rows } = await TodoService.getTodos();
     res.json({
-      data: [
-        {
-          title: 'test 1',
-          status: 'pending',
-          createdAt: new Date(),
-        },
-        {
-          title: 'test 2',
-          status: 'completed',
-          createdAt: new Date(),
-        },
-      ],
+      data: {
+        total: count,
+        items: rows,
+      },
       status: 'ok',
     });
   } catch (error: any) {

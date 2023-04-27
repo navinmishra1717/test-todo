@@ -17,7 +17,6 @@ abstract class BaseRepository<A extends {}, C extends {}, I extends Model<A, C>>
   }
 
   public create(data: MakeNullishOptional<C>): Promise<I> {
-    console.log(data, 'data');
     return this.model.create(data);
   }
 

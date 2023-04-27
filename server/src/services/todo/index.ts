@@ -1,5 +1,5 @@
-import { HttpException } from 'src/exceptions';
-import { TodoDto, TodoFillable, TodoStatus } from 'src/model/todo/types';
+import { HttpException, NotFoundException } from 'src/exceptions';
+import { TodoDto, TodoFillable, TodoStatus, TodoStatusUpdatable } from 'src/model/todo/types';
 import TodoRepository from '../../repositories/todo';
 
 class TodoService {
@@ -31,6 +31,23 @@ class TodoService {
   async getTodos() {
     const todos = await this.todo.getAll();
     return todos;
+  }
+
+  /**
+   * @description update todo status
+   * @param {number} id id of todo
+   * @param {TodoStatusUpdatable} data data for todo status update
+   * @returns {Promise<TodoDto>}
+   */
+  async updateStatus(id: number, data: TodoStatusUpdatable): Promise<TodoDto> {
+    const { status } = data;
+    const todo = await this.todo.findOneById(id);
+    if (!todo) {
+      throw new NotFoundException('Todo Not found');
+    }
+    todo.status = status;
+    await todo.save();
+    return todo.toDto();
   }
 }
 

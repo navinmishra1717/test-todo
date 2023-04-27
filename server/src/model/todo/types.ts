@@ -7,6 +7,10 @@ export interface TodoFillable {
   title: string;
 }
 
+export interface TodoStatusUpdatable {
+  status: TodoStatus;
+}
+
 export interface TodoDto {
   id: number;
   title: string;
