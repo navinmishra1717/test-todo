@@ -81,7 +81,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubtaskRequest'
+              $ref: '#/components/schemas/CreateSubtaskRequest'
       responses:
         '200':
           description: success
@@ -100,8 +100,8 @@ components:
         title:
           type: string
           example: todo 1
-          required:
-            - title
+      required:
+        - title
 
     UpdateTodoStatusRequest:
       type: object
@@ -112,12 +112,16 @@ components:
           description: Todo Status
           example: pending | completed
 
-    SubtaskRequest:
+    CreateSubtaskRequest:
       type: object
       additionalProperties: false
       properties:
         title:
           type: string
           example: subtask 1
-          required:
-            - title
+        todoId:
+          type: number
+          example: 1 | 2
+      required:
+        - title
+        - todoId
