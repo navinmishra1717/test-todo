@@ -34,3 +34,15 @@ Run the project for development
 ```
  npm run dev
 ```
+
+### Migration
+
+Create a database 
+```
+npx sequelize-cli db:create
+```
+
+Create a migration file
+```
+npx sequelize-cli migration:generate --name table-name
+```
