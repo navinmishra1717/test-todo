@@ -34,6 +34,16 @@ class TodoService {
   }
 
   /**
+   * @description get todo by id
+   * @param {number} id ID of the todo
+   * @returns {Promise<>}
+   */
+  async getTodoById(id: number) {
+    const todos = await this.todo.findByPk(id);
+    return todos;
+  }
+
+  /**
    * @description update todo status
    * @param {number} id id of todo
    * @param {TodoStatusUpdatable} data data for todo status update

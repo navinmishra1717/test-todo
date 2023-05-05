@@ -1,5 +1,6 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import sequelize from 'src/bootstrap/sequelize';
+import Subtask from '../subtask';
 import { TodoDto, TodoStatus } from './types';
 
 class Todo extends Model<InferAttributes<Todo>, InferCreationAttributes<Todo>> {
@@ -13,9 +14,9 @@ class Todo extends Model<InferAttributes<Todo>, InferCreationAttributes<Todo>> {
 
   declare readonly updatedAt: CreationOptional<Date>;
 
-  // declare subtasks?: NonAttribute<Subtask>[];
+  declare subtasks?: NonAttribute<Subtask>[];
 
-  // declare getSubtasks: () => Promise<Subtask[]>;
+  declare getSubtasks: () => Promise<Subtask[]>;
 
   public toDto(): TodoDto {
     const data: TodoDto = {

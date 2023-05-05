@@ -7,6 +7,9 @@ abstract class BaseRepository<A extends {}, C extends {}, I extends Model<A, C>>
   constructor(model: ModelStatic<I>) {
     this.model = model;
   }
+  public build(data: MakeNullishOptional<C>) {
+    return this.model.build(data);
+  }
 
   public find(query: FindOptions<A>): Promise<I[]> {
     return this.model.findAll(query);
@@ -14,6 +17,10 @@ abstract class BaseRepository<A extends {}, C extends {}, I extends Model<A, C>>
 
   public findOne(query: FindOptions<A>): Promise<I | null> {
     return this.model.findOne(query);
+  }
+
+  public findByPk(pk: number): Promise<I | null> {
+    return this.model.findByPk(pk);
   }
 
   public create(data: MakeNullishOptional<C>): Promise<I> {
