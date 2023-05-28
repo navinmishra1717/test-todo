@@ -1,23 +1,52 @@
-import { useState } from 'react';
-import { Task, TaskStatus } from '../types';
+import { useEffect, useState } from 'react';
+import { Task, TaskFillable, TaskStatus } from '../types';
 import Submitform from './SubmitForm';
 
 const TodoPage = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [newTaskTitle, setNewTaskTitle] = useState('');
 
-    const handleAddTask = (e: any) => {
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+
+    const fetchTasks = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/todos');
+            const data = await response.json();
+            setTasks(data.data.items);
+        } catch (error: any) {
+            console.error('Error fetching tasks:', error);
+        }
+    };
+
+    const handleAddTask = async (e: any) => {
+        e.preventDefault();
         if (newTaskTitle.trim() !== '') {
-            const newTask: Task = {
-                id: Date.now(),
-                title: newTaskTitle,
-                status: TaskStatus.pending
+            const newTask: TaskFillable = {
+                title: newTaskTitle
             };
 
-            setTasks([...tasks, newTask]);
-            setNewTaskTitle('');
+            try {
+                const response = await fetch('http://localhost:3001/todo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newTask)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setTasks([data.data, ...tasks]);
+                    setNewTaskTitle('');
+                } else {
+                    console.error('Failed to add task:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error adding task:', error);
+            }
         }
-        e.preventDefault();
     };
 
     const handleToggleTask = (taskId: number) => {
@@ -62,7 +91,7 @@ const TodoPage = () => {
         <div className="todo-app">
             <h1 className="todo-title">Todo App</h1>
             <Submitform setInput={setNewTaskTitle} value={newTaskTitle} onClick={handleAddTask} />
-            <ul className="task-list">
+            <ul>
                 {tasks.map((task) => (
                     <li key={task.id}>
                         <label>

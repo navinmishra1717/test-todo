@@ -42,7 +42,16 @@
     margin: 0 auto;
 }
 
-.todo-title {
+.form {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: gr;
+}
+.input {
+    width: 400px;
+    padding: 10px;
+    border-radius: 15px;
+    outline: none;
 }
 
 .task-list {
@@ -55,17 +64,6 @@
     list-style-type: none;
 }
 
-.form {
-    margin-top: 50px;
-    margin-bottom: 50px;
-    display: gr;
-}
-.input {
-    width: 400px;
-    padding: 10px;
-    border-radius: 15px;
-    outline: none;
-}
 .add-button {
     width: 100px;
     padding: 10px;

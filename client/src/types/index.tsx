@@ -3,9 +3,12 @@ export enum TaskStatus {
     completed = 'completed'
 }
 
-export interface Subtask {
-    id: number;
+export interface TaskFillable {
     title: string;
+}
+
+export interface Subtask extends TaskFillable {
+    id: number;
     status: TaskStatus;
 }
 
