@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { Task, TaskStatus } from '../types';
+import Submitform from './SubmitForm';
 
 const TodoPage = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [newTaskTitle, setNewTaskTitle] = useState('');
 
-    const handleTaskInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNewTaskTitle(event.target.value);
-    };
-
-    const handleAddTask = () => {
+    const handleAddTask = (e: any) => {
         if (newTaskTitle.trim() !== '') {
             const newTask: Task = {
                 id: Date.now(),
@@ -20,7 +17,9 @@ const TodoPage = () => {
             setTasks([...tasks, newTask]);
             setNewTaskTitle('');
         }
+        e.preventDefault();
     };
+
     const handleToggleTask = (taskId: number) => {
         const updatedTasks = tasks.map((task) => {
             if (task.id === taskId) {
@@ -60,15 +59,10 @@ const TodoPage = () => {
     };
 
     return (
-        <div>
-            <h1>Todo App</h1>
-
-            <div>
-                <input type="text" value={newTaskTitle} onChange={handleTaskInputChange} placeholder="Enter task title" />
-                <button onClick={handleAddTask}>Add Task</button>
-            </div>
-
-            <ul>
+        <div className="todo-app">
+            <h1 className="todo-title">Todo App</h1>
+            <Submitform setInput={setNewTaskTitle} value={newTaskTitle} onClick={handleAddTask} />
+            <ul className="task-list">
                 {tasks.map((task) => (
                     <li key={task.id}>
                         <label>
@@ -82,7 +76,7 @@ const TodoPage = () => {
 
                         <ul>
                             {task?.subtasks?.map((subtask) => (
-                                <li key={subtask.id}>
+                                <li key={subtask.id} className="subtask-list">
                                     <label>
                                         <input
                                             type="checkbox"
