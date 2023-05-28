@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   title: API
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:3001
 paths:
   ## TODO:
   /todo:
@@ -55,7 +55,7 @@ paths:
           description: Unauthorized
         '500':
           description: Internal server error
-  
+
   /todos:
     get:
       operationId: getTodos
@@ -71,6 +71,7 @@ paths:
           description: Unauthorized
         '500':
           description: Internal server error
+
   /subtask:
     post:
       operationId: createSubtask
@@ -82,6 +83,34 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateSubtaskRequest'
+      responses:
+        '200':
+          description: success
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /subtask/{id}:
+    put:
+      operationId: updateSubtaskStatus
+      description: Update Subtask status
+      tags:
+        - Subtask
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubtaskStatusRequest'
       responses:
         '200':
           description: success
@@ -125,3 +154,12 @@ components:
       required:
         - title
         - todoId
+
+    UpdateSubtaskStatusRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          description: Todo Status
+          example: pending | completed

@@ -8,6 +8,10 @@ export interface SubtaskFillable {
   todoId: number;
 }
 
+export interface SubtaskStatusUpdatable {
+  status: SubtaskStatus;
+}
+
 export interface SubtaskDto {
   id: number;
   title: string;
