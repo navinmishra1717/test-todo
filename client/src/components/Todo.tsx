@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Task, TaskFillable, TaskStatus } from '../types';
 import Submitform from './SubmitForm';
 
+const BASE_URL = process.env.REACT_APP_API_URL;
+
 const TodoPage = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -12,7 +14,7 @@ const TodoPage = () => {
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch('http://localhost:3001/todos');
+            const response = await fetch(`${BASE_URL}/todos`);
             const data = await response.json();
             setTasks(data.data.items);
         } catch (error: any) {
@@ -28,7 +30,7 @@ const TodoPage = () => {
             };
 
             try {
-                const response = await fetch('http://localhost:3001/todo', {
+                const response = await fetch(`${BASE_URL}/todo`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -49,28 +51,47 @@ const TodoPage = () => {
         }
     };
 
-    const handleToggleTask = (taskId: number) => {
+    const handleToggleTask = async (taskId: number) => {
         const updatedTasks = tasks.map((task) => {
             if (task.id === taskId) {
+                const nextStatus = task.status === TaskStatus.completed ? TaskStatus.pending : TaskStatus.completed;
                 return {
                     ...task,
-                    status: task.status === TaskStatus.completed ? TaskStatus.pending : TaskStatus.completed
+                    status: nextStatus,
+                    subtasks: task.subtasks?.map((sub) => {
+                        return {
+                            ...sub,
+                            status: nextStatus
+                        };
+                    })
                 };
             }
             return task;
         });
 
         setTasks(updatedTasks);
+
+        try {
+            await fetch(`${BASE_URL}/todo/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: updatedTasks.find((task) => task.id === taskId)?.status })
+            });
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
     };
 
-    const handleToggleSubtask = (taskId: number, subtaskId: number) => {
+    const handleToggleSubtask = async (taskId: number, subtaskId: number) => {
         const updatedTasks = tasks.map((task) => {
             if (task.id === taskId) {
                 const updatedSubtasks = task.subtasks?.map((subtask) => {
                     if (subtask.id === subtaskId) {
                         return {
                             ...subtask,
-                            status: task.status === TaskStatus.completed ? TaskStatus.pending : TaskStatus.completed
+                            status: subtask.status === TaskStatus.completed ? TaskStatus.pending : TaskStatus.completed
                         };
                     }
                     return subtask;
@@ -85,16 +106,34 @@ const TodoPage = () => {
         });
 
         setTasks(updatedTasks);
+        try {
+            await fetch(`${BASE_URL}/subtask/${subtaskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: updatedTasks.find((task) => task.id === taskId)?.subtasks?.find((subtask) => subtask.id === subtaskId)?.status
+                })
+            });
+        } catch (error) {
+            console.error('Error updating subtask:', error);
+        }
+    };
+
+    const handleToggleTaskCollapse = (taskId: number) => {
+        setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, open: !task.open } : task)));
     };
 
     return (
         <div className="todo-app">
             <h1 className="todo-title">Todo App</h1>
             <Submitform setInput={setNewTaskTitle} value={newTaskTitle} onClick={handleAddTask} />
-            <ul>
+            <ul className="task-list">
                 {tasks.map((task) => (
                     <li key={task.id}>
-                        <label>
+                        <div onClick={() => handleToggleTaskCollapse(task.id)}>collapse</div>
+                        <label className="task-label">
                             <input
                                 type="checkbox"
                                 checked={task.status === TaskStatus.completed}
@@ -102,21 +141,22 @@ const TodoPage = () => {
                             />
                             {task.title}
                         </label>
-
-                        <ul>
-                            {task?.subtasks?.map((subtask) => (
-                                <li key={subtask.id} className="subtask-list">
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={subtask.status === TaskStatus.completed}
-                                            onChange={() => handleToggleSubtask(task.id, subtask.id)}
-                                        />
-                                        {subtask.title}
-                                    </label>
-                                </li>
-                            ))}
-                        </ul>
+                        {task.open && (
+                            <ul className="subtask-list">
+                                {task?.subtasks?.map((subtask) => (
+                                    <li key={subtask.id}>
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={subtask.status === TaskStatus.completed}
+                                                onChange={() => handleToggleSubtask(task.id, subtask.id)}
+                                            />
+                                            {subtask.title}
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </li>
                 ))}
             </ul>

@@ -14,4 +14,5 @@ export interface Subtask extends TaskFillable {
 
 export interface Task extends Subtask {
     subtasks?: Subtask[];
+    open?: boolean;
 }
