@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { Subtask, Task, TaskFillable, TaskStatus } from '../types';
+import { Subtask, SubtaskFillable, Task, TaskFillable, TaskStatus } from '../types';
 import Submitform from './SubmitForm';
-import defaultTodoList from './defaultTodoList';
+// import defaultTodoList from './defaultTodoList';
 import SubtaskSubmitform from './SubtaskSubmitform';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -18,12 +18,9 @@ const TodoPage = () => {
 
     const fetchTasks = async () => {
         try {
-            // const response = await fetch(`${BASE_URL}/todos`);
-            // const data = await response.json();
-            // setTasks(data.data.items);
-
-            const response = defaultTodoList;
-            setTasks(response);
+            const response = await fetch(`${BASE_URL}/todos`);
+            const data = await response.json();
+            setTasks(data.data.items);
         } catch (error: any) {
             console.error('Error fetching tasks:', error);
         }
@@ -35,28 +32,25 @@ const TodoPage = () => {
             const newTask: TaskFillable = {
                 title: newTaskTitle
             };
-            setTasks([{ title: newTask.title, id: Date.now(), status: TaskStatus.completed }, ...tasks]);
-            setNewTaskTitle('');
+            try {
+                const response = await fetch(`${BASE_URL}/todo`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newTask)
+                });
 
-            // try {
-            //     const response = await fetch(`${BASE_URL}/todo`, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify(newTask)
-            //     });
-
-            //     if (response.ok) {
-            //         const data = await response.json();
-            //         setTasks([data.data, ...tasks]);
-            //         setNewTaskTitle('');
-            //     } else {
-            //         console.error('Failed to add task:', response.statusText);
-            //     }
-            // } catch (error) {
-            //     console.error('Error adding task:', error);
-            // }
+                if (response.ok) {
+                    const data = await response.json();
+                    setTasks([data.data, ...tasks]);
+                    setNewTaskTitle('');
+                } else {
+                    console.error('Failed to add task:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error adding task:', error);
+            }
         }
     };
 
@@ -70,36 +64,47 @@ const TodoPage = () => {
     const handleAddSubtask = async (e: any, taskId: number) => {
         e.preventDefault();
         const newSubTaskTitle = newSubTaskTitleMap[taskId];
-        console.log(newSubTaskTitle, 'newSubTaskTitle');
         if (newSubTaskTitle && newSubTaskTitle?.trim() !== '') {
-            // const newSubtaskTask: TaskFillable = {
-            //     title: newSubTaskTitle
-            // };
-            const taskWithNewSubtask = tasks.map((task) => {
-                if (task.id === taskId) {
-                    return {
-                        ...task,
-                        status: TaskStatus.pending,
-                        subtasks: [
-                            ...((task?.subtasks as Subtask[]) || []),
-                            {
-                                id: Date.now(),
-                                title: newSubTaskTitle,
-                                status: TaskStatus.pending
-                            }
-                        ]
-                    };
+            const newSubtask: SubtaskFillable = {
+                title: newSubTaskTitle,
+                todoId: taskId
+            };
+
+            try {
+                const response = await fetch(`${BASE_URL}/subtask`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newSubtask)
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const taskWithNewSubtask = tasks.map((task) => {
+                        if (task.id === taskId) {
+                            return {
+                                ...task,
+                                status: TaskStatus.pending,
+                                subtasks: [...((task?.subtasks as Subtask[]) || []), data.data] as Subtask[]
+                            };
+                        }
+                        return task;
+                    });
+                    setTasks(taskWithNewSubtask);
+                    const filteredObject = Object.keys(newSubTaskTitleMap).reduce((acc: any, key: string) => {
+                        if (key !== String(taskId)) {
+                            acc[key] = newSubTaskTitleMap[key];
+                        }
+                        return acc;
+                    }, {});
+
+                    setNewSubTaskTitleMap(filteredObject);
+                } else {
+                    console.error('Failed to add task:', response.statusText);
                 }
-                return task;
-            });
-            setTasks(taskWithNewSubtask);
-            const filteredObject = Object.keys(newSubTaskTitleMap).reduce((acc: any, key: string) => {
-                if (key !== String(taskId)) {
-                    acc[key] = newSubTaskTitleMap[key];
-                }
-                return acc;
-            }, {});
-            setNewSubTaskTitleMap(filteredObject);
+            } catch (error) {
+                console.error('Error updating task:', error);
+            }
         }
     };
 
@@ -123,17 +128,17 @@ const TodoPage = () => {
 
         setTasks(updatedTasks);
 
-        // try {
-        //     await fetch(`${BASE_URL}/todo/${taskId}`, {
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({ status: updatedTasks.find((task) => task.id === taskId)?.status })
-        //     });
-        // } catch (error) {
-        //     console.error('Error updating task:', error);
-        // }
+        try {
+            await fetch(`${BASE_URL}/todo/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: updatedTasks.find((task) => task.id === taskId)?.status })
+            });
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
     };
 
     const handleToggleSubtask = async (taskId: number, subtaskId: number) => {
@@ -161,19 +166,19 @@ const TodoPage = () => {
         });
 
         setTasks(updatedTasks);
-        // try {
-        //     await fetch(`${BASE_URL}/subtask/${subtaskId}`, {
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({
-        //             status: updatedTasks.find((task) => task.id === taskId)?.subtasks?.find((subtask) => subtask.id === subtaskId)?.status
-        //         })
-        //     });
-        // } catch (error) {
-        //     console.error('Error updating subtask:', error);
-        // }
+        try {
+            await fetch(`${BASE_URL}/subtask/${subtaskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: updatedTasks.find((task) => task.id === taskId)?.subtasks?.find((subtask) => subtask.id === subtaskId)?.status
+                })
+            });
+        } catch (error) {
+            console.error('Error updating subtask:', error);
+        }
     };
 
     const handleToggleTaskCollapse = (taskId: number) => {
@@ -214,8 +219,9 @@ const TodoPage = () => {
                                         right: '40px'
                                     }}
                                 >
-                                    {task?.subtasks?.length &&
-                                        `${getCompletedSubtasks(task.subtasks)} of ${task?.subtasks?.length} completed`}
+                                    {task?.subtasks?.length
+                                        ? `${getCompletedSubtasks(task.subtasks)} of ${task?.subtasks?.length} completed`
+                                        : ''}
                                 </div>
                                 {task.open ? <BsChevronUp /> : <BsChevronDown />}
                             </div>

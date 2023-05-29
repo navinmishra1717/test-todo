@@ -1,10 +1,13 @@
 import { BadRequestException, HttpException, NotFoundException } from 'src/exceptions';
 import { SubtaskDto, SubtaskFillable, SubtaskStatus, SubtaskStatusUpdatable } from 'src/model/subtask/types';
-import SubtaskRepository from '../../repositories/subtask';
 import TodoService from '../../services/todo';
+import SubtaskRepository from '../../repositories/subtask';
+import TodoRepository from '../../repositories/todo';
+import { TodoStatus } from 'src/model/todo/types';
 
 class SubtaskService {
   private subtask = SubtaskRepository;
+  private todo = TodoRepository;
 
   async create(data: SubtaskFillable): Promise<SubtaskDto> {
     const { title, todoId } = data;
@@ -21,6 +24,8 @@ class SubtaskService {
     if (!subtask) {
       throw new HttpException('Subtask not found');
     }
+    todo.status = TodoStatus.pending;
+    await todo.save();
     return subtask.toDto();
   }
 
@@ -38,6 +43,19 @@ class SubtaskService {
     }
     subtask.status = status;
     await subtask.save();
+    const todo = await this.todo.findOneById(subtask.todoId);
+    if (todo) {
+      const isPending = todo?.subtasks?.find((t) => t.status === SubtaskStatus.pending);
+
+      if (todo?.status === TodoStatus.completed && isPending) {
+        todo.status = TodoStatus.pending;
+      }
+      if (todo?.status === TodoStatus.pending && !isPending) {
+        todo.status = TodoStatus.completed;
+      }
+      await todo.save();
+    }
+
     return subtask.toDto();
   }
 }

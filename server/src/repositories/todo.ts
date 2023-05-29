@@ -14,6 +14,13 @@ class TodoRepository extends BaseRepository<InferAttributes<Todo>, InferCreation
         id,
       },
       attributes: ['id', 'title', 'status', 'createdAt'],
+      include: [
+        {
+          model: Subtask,
+          as: 'subtasks',
+          attributes: ['id', 'title', 'status'],
+        },
+      ],
     });
   }
 

@@ -12,7 +12,7 @@ class SubtaskRepository extends BaseRepository<InferAttributes<Subtask>, InferCr
       where: {
         id,
       },
-      attributes: ['id', 'title', 'status', 'createdAt'],
+      attributes: ['id', 'title', 'status', 'todoId', 'createdAt'],
     });
   }
 }

@@ -1,9 +1,12 @@
 import { HttpException, NotFoundException } from 'src/exceptions';
 import { TodoDto, TodoFillable, TodoStatus, TodoStatusUpdatable } from 'src/model/todo/types';
 import TodoRepository from '../../repositories/todo';
+import SubtaskRepository from '../../repositories/subtask';
+import { SubtaskStatus } from 'src/model/subtask/types';
 
 class TodoService {
   private todo = TodoRepository;
+  private subtask = SubtaskRepository;
 
   /**
    * @description create todo
@@ -55,8 +58,23 @@ class TodoService {
     if (!todo) {
       throw new NotFoundException('Todo Not found');
     }
+
     todo.status = status;
     await todo.save();
+    const subtaskUpdatePromises: any = [];
+    todo?.subtasks?.forEach((t) => {
+      subtaskUpdatePromises.push(
+        this.subtask.update(
+          { status: SubtaskStatus[status] },
+          {
+            where: {
+              id: t.id,
+            },
+          }
+        )
+      );
+    });
+    await Promise.all(subtaskUpdatePromises);
     return todo.toDto();
   }
 }

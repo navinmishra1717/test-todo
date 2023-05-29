@@ -7,6 +7,10 @@ export interface TaskFillable {
     title: string;
 }
 
+export interface SubtaskFillable extends TaskFillable {
+    todoId: number;
+}
+
 export interface Subtask extends TaskFillable {
     id: number;
     status: TaskStatus;
