@@ -12,10 +12,10 @@ const handleTaskInputChange = (event: React.ChangeEvent<HTMLInputElement>, setIn
 
 const Submitform = ({ setInput, onClick, value }: SubmitProps) => {
     return (
-        <div className="form">
+        <div className="task-form">
             <form onSubmit={(e: any) => onClick(e)}>
                 <input
-                    className="input"
+                    className="task-input"
                     type="text"
                     placeholder="What to do?"
                     value={value}
