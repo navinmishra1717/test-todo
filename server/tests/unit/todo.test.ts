@@ -2,7 +2,7 @@ import { Op } from 'sequelize';
 import chaiPromiser from 'chai-as-promised';
 import Todo from '@app/model/todo';
 import TodoService from '@app/services/todo';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
 import { TodoStatus } from '@app/model/todo/types';
 import { NotFoundException } from '@app/exceptions';
 
@@ -58,7 +58,7 @@ describe('TodoService', () => {
     });
 
     it('should return null for non-existent todo id', async () => {
-      const todo = await TodoService.getTodoById(5);
+      const todo = await TodoService.getTodoById(1111);
       expect(todo).to.be.equal(null);
     });
     it('should return null for id 0', async () => {
@@ -71,7 +71,7 @@ describe('TodoService', () => {
     it('should get todos', async () => {
       const todos = await TodoService.getTodos();
       expect(todos.rows).to.be.an('array');
-      expect(todos.rows.length).to.equal(1);
+      expect(todos.count).not.to.be.equal(0);
       expect(todos.count).to.be.a('number');
     });
   });

@@ -1,9 +1,9 @@
 import chaiPromiser from 'chai-as-promised';
 import SubtaskService from '@app/services/subtask';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
 import { TodoDto, TodoStatus } from '@app/model/todo/types';
 import { BadRequestException, NotFoundException } from '@app/exceptions';
-import { createTodo, deleteTodo } from 'tests/utils';
+import { createTodo, deleteTodo } from '../utils';
 import { SubtaskStatus } from '@app/model/subtask/types';
 
 chai.use(chaiPromiser);
@@ -12,7 +12,7 @@ let dummyTodo: TodoDto;
 
 const subtaskDummydata = {
   title: 'subtask title 1',
-  todoId: 50,
+  todoId: 501,
 };
 
 const subtaskDummydata2 = {
