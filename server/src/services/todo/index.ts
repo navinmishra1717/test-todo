@@ -42,8 +42,8 @@ class TodoService {
    * @returns {Promise<>}
    */
   async getTodoById(id: number) {
-    const todos = await this.todo.findByPk(id);
-    return todos;
+    const todo = await this.todo.findByPk(id);
+    return todo;
   }
 
   /**
