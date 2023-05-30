@@ -42,25 +42,44 @@
     margin: 0 auto;
 }
 
-.task-form {
-    margin-top: 50px;
-    margin-bottom: 50px;
-    display: gr;
+.todo-title {
+    text-align: center;
 }
 
-.subtask-form {
-    margin-top: -15px;
-    margin-bottom: -15px;
+.task-form {
+    padding: 40px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .task-input {
-    width: 400px;
-    padding: 10px;
+    width: 500px;
+    padding: 16px;
+    border-radius: 15px;
+    font-size: medium;
+    outline: none;
+}
+
+.add-button {
+    width: 130px;
+    padding: 12px;
+    font-size: 18px;
+    margin-left: 32px;
+    border: 2px solid rgb(97, 97, 97);
     border-radius: 15px;
     outline: none;
 }
+
+.subtask-button {
+    width: 120px;
+    padding: 8px;
+    font-size: 16px;
+    margin-left: 32px;
+    border: 2px solid rgb(97, 97, 97);
+    border-radius: 5px;
+    outline: none;
+}
+
 .completed-count {
     display: flex;
     justify-content: space-between;
@@ -70,6 +89,7 @@
     width: 400px;
     padding: 10px;
     border-radius: 5px;
+    font-size: medium;
     outline: none;
 }
 
@@ -83,28 +103,23 @@
     list-style-type: none;
 }
 
-.add-button {
-    width: 100px;
-    padding: 10px;
-    font-size: 16px;
-    margin: 10px;
-    border: 2px solid rgb(97, 97, 97);
-    border-radius: 15px;
-    outline: none;
-}
 .add-button:hover {
     background-color: #ccc;
     cursor: pointer;
 }
 
+.subtask-button:hover {
+    background-color: #ccc;
+    cursor: pointer;
+}
+
 .collapsible-list {
-    border: 2px solid #ccc;
-    border-radius: 4px;
     margin-bottom: 10px;
 }
 
 .collapsible-list > div {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 10px;
     cursor: pointer;
@@ -116,7 +131,21 @@
 }
 
 .collapsible-list li {
-    padding: 8px;
+    padding: 10px;
+}
+
+.collapsible-list .task-card {
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.collapsible-list .subtask-card {
+    border: 2px solid #eee;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .task-checkbox {

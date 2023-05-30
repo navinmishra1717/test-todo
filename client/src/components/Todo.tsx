@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { Subtask, SubtaskFillable, Task, TaskFillable, TaskStatus } from '../types';
 import Submitform from './SubmitForm';
-// import defaultTodoList from './defaultTodoList';
 import SubtaskSubmitform from './SubtaskSubmitform';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -196,7 +195,7 @@ const TodoPage = () => {
             <ul className="task-list">
                 {tasks.map((task) => (
                     <li key={task.id} className="collapsible-list">
-                        <div>
+                        <div className="task-card">
                             <label style={{ wordBreak: 'break-all', width: '100%' }}>
                                 <input
                                     className="task-checkbox"
@@ -229,7 +228,7 @@ const TodoPage = () => {
                         {task.open && (
                             <ul className="subtask-list">
                                 {task?.subtasks?.map((subtask) => (
-                                    <li key={subtask.id} className="collapsible-list">
+                                    <li key={subtask.id} className="subtask-card">
                                         <label>
                                             <input
                                                 className="task-checkbox"
@@ -241,7 +240,7 @@ const TodoPage = () => {
                                         </label>
                                     </li>
                                 ))}
-                                <li key="new-list" className="collapsible-list">
+                                <li key="new-list" className="subtask-card">
                                     <label>
                                         <SubtaskSubmitform
                                             handleInput={handleAddSubtaskTitle}
