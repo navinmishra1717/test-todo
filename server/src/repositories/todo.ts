@@ -34,10 +34,12 @@ class TodoRepository extends BaseRepository<InferAttributes<Todo>, InferCreation
           model: Subtask,
           as: 'subtasks',
           attributes: ['id', 'title', 'status', 'createdAt'],
-          order: [['createdAt', 'DESC']],
         },
       ],
-      order: [['createdAt', 'DESC']],
+      order: [
+        ['createdAt', 'DESC'],
+        [{ model: Subtask, as: 'subtasks' }, 'createdAt', 'ASC'],
+      ],
     };
     if (limit && offset) {
       findQuery.limit = limit;
