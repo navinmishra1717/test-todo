@@ -195,7 +195,7 @@ const TodoPage = () => {
             <ul className="task-list">
                 {tasks.map((task) => (
                     <li key={task.id} className="collapsible-list">
-                        <div className="task-card">
+                        <div className={`task-card ${task.open ? 'active-task' : ''}`}>
                             <label style={{ wordBreak: 'break-all', width: '100%' }}>
                                 <input
                                     className="task-checkbox"
