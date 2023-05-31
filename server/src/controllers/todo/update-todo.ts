@@ -2,15 +2,16 @@ import { NextFunction, Request, Response } from 'express';
 import { TodoStatus } from 'src/model/todo/types';
 import { sanitize, SanitizeType } from 'src/utils/sanitize';
 import TodoService from '../../services/todo';
+import { ValidationException } from '@app/exceptions';
 
 function validateUpdateTodoStatus(req: Request) {
   const { status } = req.body;
 
   if (!status) {
-    throw new Error('Status is required');
+    throw new ValidationException('Status is required');
   }
   if (!Object.values(TodoStatus).includes(status)) {
-    throw new Error('Invalid status');
+    throw new ValidationException('Invalid status');
   }
   return {
     id: Number(sanitize(req.params.id, [SanitizeType.trim])),

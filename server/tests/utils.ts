@@ -1,5 +1,6 @@
-import Todo from '@app/model/todo';
 import { Op } from 'sequelize';
+import Todo from '@app/model/todo';
+import Subtask from '@app/model/subtask';
 import TodoService from '@app/services/todo';
 import { TodoDto } from '@app/model/todo/types';
 
@@ -20,4 +21,15 @@ export async function createTodo(title: string = 'test todo'): Promise<TodoDto> 
     title,
   });
   return todo;
+}
+
+export async function deleteSubtask(titles: string[] = ['test subtask']) {
+  await Subtask.destroy({
+    where: {
+      title: {
+        [Op.in]: titles,
+      },
+    },
+    force: true,
+  });
 }

@@ -9,7 +9,7 @@ function validateCreateSubtaskRequest(req: Request) {
     throw new ValidationException('Title is required');
   }
   if (!todoId) {
-    throw new ValidationException('Task ID is required');
+    throw new ValidationException('TodoId is required');
   }
   return {
     title: sanitize(title, [SanitizeType.trim]),

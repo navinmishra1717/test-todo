@@ -12,6 +12,6 @@ export async function getTodos(req: Request, res: Response, next: NextFunction) 
       status: 'ok',
     });
   } catch (error: any) {
-    throw error;
+    next(error);
   }
 }
