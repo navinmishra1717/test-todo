@@ -1,4 +1,4 @@
-# test-todo
+# todo-app
 
 ## Prerequisite
 
@@ -10,12 +10,47 @@
 
 ### Install
 
+Server
+
 ```
-cd test-todo
+cd server
 npm install
 ```
 
-### Run
+Client
+
+```
+cd ../client
+npm install
+```
+
+### Database setup
+
+Create a database
+
+```
+npm run db:create
+```
+
+OR
+
+```
+npx sequelize-cli db:create
+```
+
+### Database migration
+
+```
+npm run migrate
+```
+
+### Database Seeder
+
+```
+npm run seed
+```
+
+### Run Server
 
 Build the project
 
@@ -35,14 +70,26 @@ Run the project for development
  npm run dev
 ```
 
-### Migration
+### Test the server
 
-Create a database 
 ```
-npx sequelize-cli db:create
+npm run test
 ```
 
-Create a migration file
+watch
+
 ```
-npx sequelize-cli migration:generate --name table-name
+npm run test:watch
+```
+
+coverage
+
+```
+npm run coverage
+```
+
+### Run Client
+
+```
+npm run start
 ```
